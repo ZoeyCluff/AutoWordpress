@@ -3,12 +3,18 @@
 # Import Modules. twindb_cloudflare will be replaced with requests once I(we) figure out proper vanilla API calls.
 #twindb doesn't support removing IPV6 records but requests with the native Cloudflare API does.
 
-import random
+from tempfile import mkstemp
+# import passwords and API keys to make it easier to link people to this without giving away users/passwords.
+from secrets import *
+from distutils.dir_util import copy_tree
+
+from random import *
 from twindb_cloudflare.twindb_cloudflare import CloudFlare, CloudFlareException
 import os
 import sys
 import traceback
 import fileinput
+import string
 import MySQLdb
 import urllib
 import shutil
@@ -16,9 +22,10 @@ import tarfile
 import pwd
 import grp
 import socket
+import time
 import requests
 import json
-from secrets import *
+
 
 
 testing = False
@@ -61,7 +68,7 @@ def main(testing = False):
 
 
 
-
+for arg in sys.argv:
     if arg.lower() == "-subdomain":
         subdomain = str(raw_input("What is the subdomain:"))
         fullDomain = subdomain +"." + domain
@@ -70,7 +77,7 @@ def main(testing = False):
         fromDirectory = "/var/www/" + fullDomain + "/wordpress/"
         leDomains =  "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (fullDomain, wwwFull)
 
-    elif:
+    else:
         toDirectory = "/var/www/" + domain
         fromDirectory = "/var/www/" + domain + "/wordpress/"
         leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
@@ -124,10 +131,10 @@ def main(testing = False):
 
     # Create CF zones
 
-    cf.create_dns_record(@, domain, ip)
-    cf.create_dns_record(www, domain, ip)
-    cf.create_dns_record(@, domain, ipv6, record_type="AAAA)
-    cf.create_dns_record(www, domain, ipv6, record_type="AAAA)
+    cf.create_dns_record('@', domain, ip)
+    cf.create_dns_record('www', domain, ip)
+    cf.create_dns_record('@', domain, ipv6, record_type="AAAA")
+    cf.create_dns_record('www', domain, ipv6, record_type="AAAA")
 
     # set correct file / folder permissions
 
@@ -138,13 +145,13 @@ def main(testing = False):
     with open('nginxconfig.conf', 'r') as f:
         for line in f:
             if line.strip().startswith('ssl_certificate_key'):
-                newData += line.replace('ssl_certificate_key', 'ssl_certificate_key /etc/letsencrypt/live/'+blogurl1+'/privkey.pem;')
+                newData += line.replace('ssl_certificate_key', 'ssl_certificate_key /etc/letsencrypt/live/'+domain+'/privkey.pem;')
             elif line.strip().startswith('ssl_certificate'):
-                newData += line.replace('ssl_certificate', 'ssl_certificate /etc/letsencrypt/live/'+blogurl1+'/fullchain.pem;')
+                newData += line.replace('ssl_certificate', 'ssl_certificate /etc/letsencrypt/live/'+domain+'/fullchain.pem;')
             elif line.strip().startswith('root'):
-                newData += line.replace('root', 'root /var/www/'+blogshortstr+';')
+                newData += line.replace('root', 'root /var/www/'+domain+';')
             elif line.strip().startswith('server_name'):
-                newData += line.replace('server_name', 'server_name' + " " +blogurl2 + " " +blogurl1  +';')
+                newData += line.replace('server_name', 'server_name' + " " +domain + " " +domainLong  +';')
             else:
                 newData += line
 
@@ -165,43 +172,43 @@ def main(testing = False):
         if testing:
             print("Run Success and testing specified, deleting files.")
             print("Cleaning up Cloudflare zones.....")
-            cf.delete_dns_record(blogshortstr + '.beautifuldisaster.group', 'beautifuldisaster.group')
-            cf.delete_dns_record(bloglongstr + '.beautifuldisaster.group', 'beautifuldisaster.group')
-
-    # Delete nginx config and restart service
-
-    print("DNS records deleted, removing htdocs folder")
+            cf.delete_dns_record('@' + domain, domain)
+            cf.delete_dns_record('www', domain, domain)
+            print("DNS records deleted, removing htdocs folder")
             shutil.rmtree(toDirectory)
             print("htdocs folder deleted, stopping nginx service, deleting .conf file, and starting nginx service")
             os.remove("/etc/nginx/sites-enabled/" +domain + ".conf")
             os.system(str("sudo service nginx start"))
 
-    print("dropping user and database")
+            print("dropping user and database")
 
-    db = MySQLdb.connect(host="mysql.beautifuldisaster.group",  # your host
-                                user="root",       # username
-                                passwd= mysqlRootPassword )
-                                    # password
+            db = MySQLdb.connect(host= mysqlServer,  # your host
+                                        user= mysqlUser,       # username
+                                        passwd= mysqlRootPassword )
+                                            # password
 
 
             # Create a Cursor object to execute queries.
             cur = db.cursor()
 
             # Select data from table using SQL query.
-            cur.execute("DROP DATABASE " +blogshortstr)
+            cur.execute("DROP DATABASE " + domain)
 
-            cur.execute("DROP USER " +mysqluser+"@"+"45.76.26.71")
+            cur.execute("DROP USER " +domain+"@"+"*")
             cur.execute("FLUSH PRIVILEGES")
 
             db.commit()
             db.close()
 
             print("Database and user dropped")
+    # Delete nginx config and restart service
+
+
 
     else:
         print("Errors found in config, reverting")
-        cf.delete_dns_record(@, domain)
-        cf.delete_dns_record(www, domain, domain)
+        cf.delete_dns_record('@', domain)
+        cf.delete_dns_record('www', domain, domain)
         # maybe someday this will delete the IPV6 records.
 
         print("DNS records deleted, removing htdocs folder")
