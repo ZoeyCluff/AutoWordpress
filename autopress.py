@@ -9,7 +9,7 @@ import os
 import sys
 import traceback
 import fileinput
-# import MySQLdb
+import MySQLdb
 import urllib
 import shutil
 # import tarutil
@@ -94,7 +94,7 @@ def main(testing = False):
     # Select data from table using SQL query.
     cur.execute("CREATE DATABASE IF NOT EXISTS " +domain)
 
-    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'*' IDENTIFIED BY %s ", (domain, mysqluser, mysqlpassword))
+    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'*' IDENTIFIED BY %s ", (domain, domain, mysqlpassword))
     cur.execute("FLUSH PRIVILEGES")
 
     db.commit()
