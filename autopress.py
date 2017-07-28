@@ -121,6 +121,121 @@ def main(testing = False):
     # set correct permissions
     os.chown(toDirectory, 33, 33)
 
+
+    # Create CF zones
+
+    cf.create_dns_record(@, domain, ip)
+    cf.create_dns_record(www, domain, ip)
+    cf.create_dns_record(@, domain, ipv6, record_type="AAAA)
+    cf.create_dns_record(www, domain, ipv6, record_type="AAAA)
+
+    # set correct file / folder permissions
+
+    os.system(str(folder))
+    os.system(str(filePerm))
+
+    newData = ''
+    with open('nginxconfig.conf', 'r') as f:
+        for line in f:
+            if line.strip().startswith('ssl_certificate_key'):
+                newData += line.replace('ssl_certificate_key', 'ssl_certificate_key /etc/letsencrypt/live/'+blogurl1+'/privkey.pem;')
+            elif line.strip().startswith('ssl_certificate'):
+                newData += line.replace('ssl_certificate', 'ssl_certificate /etc/letsencrypt/live/'+blogurl1+'/fullchain.pem;')
+            elif line.strip().startswith('root'):
+                newData += line.replace('root', 'root /var/www/'+blogshortstr+';')
+            elif line.strip().startswith('server_name'):
+                newData += line.replace('server_name', 'server_name' + " " +blogurl2 + " " +blogurl1  +';')
+            else:
+                newData += line
+
+
+    with open("/etc/nginx/sites-enabled/" +domain + ".conf", 'w') as f:
+        f.write(newData)
+
+    # generate LE certificates
+
+    os.system(str("sudo systemctl stop nginx"))
+    os.system(str(leDomains))
+    os.system(nginxTest)
+
+    # check nginx config before starting nginx again, else reverting
+    if 'ok' in open(str('nginx.py')).read():
+        print("Config tests Good")
+        os.system(str("sudo systemctl start nginx"))
+        if testing:
+            print("Run Success and testing specified, deleting files.")
+            print("Cleaning up Cloudflare zones.....")
+            cf.delete_dns_record(blogshortstr + '.beautifuldisaster.group', 'beautifuldisaster.group')
+            cf.delete_dns_record(bloglongstr + '.beautifuldisaster.group', 'beautifuldisaster.group')
+
+    # Delete nginx config and restart service
+
+    print("DNS records deleted, removing htdocs folder")
+            shutil.rmtree(toDirectory)
+            print("htdocs folder deleted, stopping nginx service, deleting .conf file, and starting nginx service")
+            os.remove("/etc/nginx/sites-enabled/" +domain + ".conf")
+            os.system(str("sudo service nginx start"))
+
+    print("dropping user and database")
+
+    db = MySQLdb.connect(host="mysql.beautifuldisaster.group",  # your host
+                                user="root",       # username
+                                passwd= mysqlRootPassword )
+                                    # password
+
+
+            # Create a Cursor object to execute queries.
+            cur = db.cursor()
+
+            # Select data from table using SQL query.
+            cur.execute("DROP DATABASE " +blogshortstr)
+
+            cur.execute("DROP USER " +mysqluser+"@"+"45.76.26.71")
+            cur.execute("FLUSH PRIVILEGES")
+
+            db.commit()
+            db.close()
+
+            print("Database and user dropped")
+
+    else:
+        print("Errors found in config, reverting")
+        cf.delete_dns_record(@, domain)
+        cf.delete_dns_record(www, domain, domain)
+        # maybe someday this will delete the IPV6 records.
+
+        print("DNS records deleted, removing htdocs folder")
+        shutil.rmtree(toDirectory)
+        print("htdocs folder deleted, stopping nginx service, deleting .conf file, and starting nginx service")
+        os.remove("/etc/nginx/sites-enabled/" +domain + ".conf")
+        os.system(str("sudo service nginx start"))
+        print("nginx .conf deleted, services restarted.")
+        print("Deleting files in /etc/letsencrypt")
+        os.remove("/etc/letsencrypt/renewal/"+domain+".conf")
+        shutil.rmtree("/etc/letsencrypt/live/"+domain)
+        # drop the database and users (in theory).
+        print("dropping user and database")
+        db = MySQLdb.connect(host= mysqlServer,  # your host
+                    user= mysqlUser,       # username
+                    passwd= mysqlRootPassword )
+                            # password
+
+
+        # Create a Cursor object to execute queries.
+        cur = db.cursor()
+
+        # Select data from table using SQL query.
+        cur.execute("DROP DATABASE " +domain)
+        cur.execute("DROP USER " +domain+"@"+"*")
+        cur.execute("FLUSH PRIVILEGES")
+        db.commit()
+        db.close()
+
+    print("To recap:")
+    print("The MySQL username is: "), (domain)
+    print("The MySQL password is: "), (mysqlpassword)
+    print("The domain name is: "), (domain)
+    print("The Domain Name (with www) is "), (domainLong)
 try:
     main(testing)
 except Exception as e:
