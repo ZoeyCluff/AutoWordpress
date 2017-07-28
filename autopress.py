@@ -30,7 +30,7 @@ import json
 
 testing = False
 
-global config
+
 
 # Make sure secrets file at least exists, not checking if valid at this point
 if not os.path.exists("secrets.py"):
@@ -57,6 +57,8 @@ if len(sys.argv) > 1:
 
 
 def main(testing = False):
+    global config
+    global domain
     domain = str(raw_input("What is the root domain name ie domain.com:"))
     domainLong = str('www.'+domain)
     config = "/etc/nginx/sites-enabled" +domain + ".conf"
