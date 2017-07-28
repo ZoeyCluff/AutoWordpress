@@ -54,6 +54,11 @@ def main(testing = False):
     domainLong = str('www.'+domain)
     config = "/etc/nginx/sites-enabled" +domain + ".conf"
     cf = CloudFlare(CLOUDFLARE_EMAIL, CLOUDFLARE_AUTH_KEY)
+    mysqluser = domainLong
+    mysqlpass = string.ascii_letters + string.punctuation.replace("\"", "").replace("'", "") + string.digits
+    mysqlpassword1 = "".join(choice(mysqlpass) for x in range(randint(8, 16)))
+    mysqlpassword = ('%s' % mysqlpassword1)
+
 
 
     if arg.lower() == "-subdomain":
@@ -61,9 +66,14 @@ def main(testing = False):
         fullDomain = subdomain +"." + domain
         wwwFull = "www."+subdomain + "." + domain
         toDirectory = "/var/www/" + fullDomain
+        fromDirectory = "/var/www/" + fullDomain + "/wordpress/"
+        leDomains =  "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (fullDomain, wwwFull)
 
-
-
+    elif:
+        toDirectory = "/var/www/" + domain
+        fromDirectory = "/var/www/" + domain + "/wordpress/"
+        leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
+        
 
 
 try:
