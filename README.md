@@ -5,3 +5,13 @@ This is a pet project I use for a personal project that will let me setup blogs 
 
 
 # This code is tested in V0.15 and is based off that. I haven't done much testing on this code yet but there are only minor changes.
+
+# Requirements
+
+The following python modules are required currently. Install with pip or easy_install:
+twindb.cloudflare
+urllib3
+requests
+MySQL-python
+
+(I think this is it)
