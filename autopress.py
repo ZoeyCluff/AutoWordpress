@@ -61,6 +61,7 @@ def main(testing = False):
 
 
 
+
     if arg.lower() == "-subdomain":
         subdomain = str(raw_input("What is the subdomain:"))
         fullDomain = subdomain +"." + domain
@@ -73,8 +74,52 @@ def main(testing = False):
         toDirectory = "/var/www/" + domain
         fromDirectory = "/var/www/" + domain + "/wordpress/"
         leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
-        
 
+
+
+    print("Creating MySQL Database and User")
+
+    # create db + user
+
+
+    db = MySQLdb.connect(host= mysqlServer,  # your host
+                        user= mysqlUser,       # username
+                        passwd= mysqlRootPassword )
+                            # password
+
+
+    # Create a Cursor object to execute queries.
+    cur = db.cursor()
+
+    # Select data from table using SQL query.
+    cur.execute("CREATE DATABASE IF NOT EXISTS " +domain)
+
+    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'*' IDENTIFIED BY %s ", (domain, mysqluser, mysqlpassword))
+    cur.execute("FLUSH PRIVILEGES")
+
+    db.commit()
+    db.close()
+
+
+    # Create htdocs folder
+    os.mkdir(toDirectory)
+
+
+    # Download Wordpress and extract
+
+    linkToFile = "https://wordpress.org/latest.tar.gz"
+    localDestination = toDirectory + "wordpress.tar.gz"
+    resultFilePath, responseHeaders = urllib.urlretrieve(linkToFile, localDestination)
+
+    tar = tarfile.open(localDestination)
+    tar.extractall(toDirectory)
+    tar.close
+
+    copy_tree(fromDirectory, toDirectory)
+    shutil.rmtree(fromDirectory)
+
+    # set correct permissions
+    os.chown(toDirectory, 33, 33)
 
 try:
     main(testing)
