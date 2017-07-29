@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Import Modules. twindb_cloudflare will be replaced with requests once I(we) figure out proper vanilla API calls.
-#twindb doesn't support removing IPV6 records but requests with the native Cloudflare API does.
+# twindb doesn't support removing IPV6 records but requests with the native Cloudflare API does.
 
 from tempfile import mkstemp
 # import passwords and API keys to make it easier to link people to this without giving away users/passwords.
@@ -58,8 +58,9 @@ if len(sys.argv) > 1:
 
 def main(testing = False):
     global config
-    
+    domainShort = str(raw_input("What is the domain without .com/.net etc"))
     domain = str(raw_input("What is the root domain name ie domain.com:"))
+    domainPeriod = str('.'+domain)
     domainLong = str('www.'+domain)
     config = "/etc/nginx/sites-enabled" +domain + ".conf"
     cf = CloudFlare(CLOUDFLARE_EMAIL, CLOUDFLARE_AUTH_KEY)
@@ -80,14 +81,14 @@ def main(testing = False):
             leDomains =  "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (fullDomain, wwwFull)
 
         else:
-            toDirectory = "/var/www/" + domain
-            fromDirectory = "/var/www/" + domain + "/wordpress/"
+            toDirectory = "/var/www/" + domain + '/'
+            fromDirectory = "/var/www/" + domain + '/' + "/wordpress/"
             leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
 
 
 
     print("Creating MySQL Database and User")
-
+    print(domain)
     # create db + user
 
 
@@ -101,9 +102,9 @@ def main(testing = False):
     cur = db.cursor()
 
     # Select data from table using SQL query.
-    cur.execute("CREATE DATABASE IF NOT EXISTS " +domain)
+    cur.execute("CREATE DATABASE IF NOT EXISTS " +domainShort)
 
-    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'*' IDENTIFIED BY %s ", (domain, domain, mysqlpassword))
+    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'*' IDENTIFIED BY %s ", (domainShort, domainShort, mysqlpassword))
     cur.execute("FLUSH PRIVILEGES")
 
     db.commit()
@@ -133,10 +134,7 @@ def main(testing = False):
 
     # Create CF zones
 
-    cf.create_dns_record('@', domain, ip)
-    cf.create_dns_record('www', domain, ip)
-    cf.create_dns_record('@', domain, ipv6, record_type="AAAA")
-    cf.create_dns_record('www', domain, ipv6, record_type="AAAA")
+    r = requests.get('https://api.cloudflare.com/client/v4/zones')
 
     # set correct file / folder permissions
 
@@ -241,7 +239,7 @@ def main(testing = False):
         db.close()
 
     print("To recap:")
-    print("The MySQL username is: "), (domain)
+    print("The MySQL username is: "), (domainShort)
     print("The MySQL password is: "), (mysqlpassword)
     print("The domain name is: "), (domain)
     print("The Domain Name (with www) is "), (domainLong)

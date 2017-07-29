@@ -15,3 +15,12 @@ requests
 MySQL-python
 
 (I think this is it)
+
+
+# CURRENT PROBLEMS:
+
+I used twindb_cloudflare to create and delete my cloudflare records. While I can change the code to create the dns zone in the script and then add the records the code will error out until the Nameservers are updated to cloudflare's DNS servers. When I originally wrote this code I use a Zone that already existed and just needed to be added to. I'm not 100% sure how to go around this. I'll have to think about this. I want to make it as automated as possible, but you may need to add the domain to cloudflare and update your DNS settings for your domain manually. :/
+
+# Testing Updates:
+
+Code works up until cloudflare is supposed to work. I opened a ticket with cloudflare asking what the best course of action is. Further parts of the script will error (The letsencrypt portions) due to not being able to resolve the server to do the authorization magic. 

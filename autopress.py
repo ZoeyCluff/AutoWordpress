@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Import Modules. twindb_cloudflare will be replaced with requests once I(we) figure out proper vanilla API calls.
-#twindb doesn't support removing IPV6 records but requests with the native Cloudflare API does.
+# twindb doesn't support removing IPV6 records but requests with the native Cloudflare API does.
 
 from tempfile import mkstemp
 # import passwords and API keys to make it easier to link people to this without giving away users/passwords.
@@ -60,6 +60,7 @@ def main(testing = False):
     global config
     domainShort = str(raw_input("What is the domain without .com/.net etc"))
     domain = str(raw_input("What is the root domain name ie domain.com:"))
+    domainPeriod = str('.'+domain)
     domainLong = str('www.'+domain)
     config = "/etc/nginx/sites-enabled" +domain + ".conf"
     cf = CloudFlare(CLOUDFLARE_EMAIL, CLOUDFLARE_AUTH_KEY)
@@ -134,7 +135,7 @@ def main(testing = False):
     # Create CF zones
 
     # cf.create_dns_record('@', domain, ip)
-    cf.create_dns_record('www', '%s', '%s') % (domain, ip)
+    cf.create_dns_record('www', '%s', '%s') % (domainPeriod, ipv4)
     # cf.create_dns_record('@', domain, ipv6, record_type="AAAA")
     # cf.create_dns_record('www', domain, ipv6, record_type="AAAA")
 
@@ -241,7 +242,7 @@ def main(testing = False):
         db.close()
 
     print("To recap:")
-    print("The MySQL username is: "), (domain)
+    print("The MySQL username is: "), (domainShort)
     print("The MySQL password is: "), (mysqlpassword)
     print("The domain name is: "), (domain)
     print("The Domain Name (with www) is "), (domainLong)
