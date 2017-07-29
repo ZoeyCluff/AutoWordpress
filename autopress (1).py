@@ -58,7 +58,7 @@ if len(sys.argv) > 1:
 
 def main(testing = False):
     global config
-    domainShort = str(raw_input("What is the domain without .com/.net etc"))
+    
     domain = str(raw_input("What is the root domain name ie domain.com:"))
     domainLong = str('www.'+domain)
     config = "/etc/nginx/sites-enabled" +domain + ".conf"
@@ -80,14 +80,14 @@ def main(testing = False):
             leDomains =  "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (fullDomain, wwwFull)
 
         else:
-            toDirectory = "/var/www/" + domain + '/'
-            fromDirectory = "/var/www/" + domain + '/' + "/wordpress/"
+            toDirectory = "/var/www/" + domain
+            fromDirectory = "/var/www/" + domain + "/wordpress/"
             leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
 
 
 
     print("Creating MySQL Database and User")
-    print(domain)
+
     # create db + user
 
 
@@ -101,9 +101,9 @@ def main(testing = False):
     cur = db.cursor()
 
     # Select data from table using SQL query.
-    cur.execute("CREATE DATABASE IF NOT EXISTS " +domainShort)
+    cur.execute("CREATE DATABASE IF NOT EXISTS " +domain)
 
-    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'*' IDENTIFIED BY %s ", (domainShort, domainShort, mysqlpassword))
+    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'*' IDENTIFIED BY %s ", (domain, domain, mysqlpassword))
     cur.execute("FLUSH PRIVILEGES")
 
     db.commit()
@@ -133,10 +133,10 @@ def main(testing = False):
 
     # Create CF zones
 
-    # cf.create_dns_record('@', domain, ip)
-    cf.create_dns_record('www', '%s', '%s') % (domain, ip)
-    # cf.create_dns_record('@', domain, ipv6, record_type="AAAA")
-    # cf.create_dns_record('www', domain, ipv6, record_type="AAAA")
+    cf.create_dns_record('@', domain, ip)
+    cf.create_dns_record('www', domain, ip)
+    cf.create_dns_record('@', domain, ipv6, record_type="AAAA")
+    cf.create_dns_record('www', domain, ipv6, record_type="AAAA")
 
     # set correct file / folder permissions
 
