@@ -23,4 +23,8 @@ I used twindb_cloudflare to create and delete my cloudflare records. While I can
 
 # Testing Updates:
 
-Code works up until cloudflare is supposed to work. I opened a ticket with cloudflare asking what the best course of action is. Further parts of the script will error (The letsencrypt portions) due to not being able to resolve the server to do the authorization magic. 
+Code works up until cloudflare is supposed to work. I opened a ticket with cloudflare asking what the best course of action is. Further parts of the script will error (The letsencrypt portions) due to not being able to resolve the server to do the authorization magic.
+
+# Planned Features:
+
+A nice person on reddit brought up the ability to auto install Wordpress themes and plugins. This (should) be easily doable. Just copy themes into the /themes folder and plugins into the /plugins folder and pass the -withAddons flag to have them copied to the correct folders automagically. The person mentioned having problems with plugins such as Wordfence, but we'll see (I really happen to like that plugin).  
