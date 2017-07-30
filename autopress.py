@@ -78,12 +78,19 @@ def main(testing = False):
             wwwFull = "www."+subdomain + "." + domain
             toDirectory = "/var/www/" + fullDomain
             fromDirectory = "/var/www/" + fullDomain + "/wordpress/"
+            os.mkdir(toDirectory)
             leDomains =  "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (fullDomain, wwwFull)
+            folder = "find '%s' -type d -exec chmod 755 {} +" % str(toDirectory)
+            filePerm = "find '%s' -type f -exec chmod 644 {} +" % str(toDirectory)
 
         else:
             toDirectory = "/var/www/" + domain + '/'
             fromDirectory = "/var/www/" + domain + '/' + "/wordpress/"
+            os.mkdir(toDirectory)
             leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
+
+            folder = "find '%s' -type d -exec chmod 755 {} +" % str(toDirectory)
+            filePerm = "find '%s' -type f -exec chmod 644 {} +" % str(toDirectory)
 
 
 
@@ -112,7 +119,7 @@ def main(testing = False):
 
 
     # Create htdocs folder
-    os.mkdir(toDirectory)
+
 
 
     # Download Wordpress and extract
