@@ -9,10 +9,11 @@ This is a pet project I use for a personal project that will let me setup blogs 
 # Requirements
 
 The following python modules are required currently. Install with pip or easy_install:
-twindb.cloudflare
-urllib3
-requests
-MySQL-python
+
+* twindb.cloudflare
+* urllib3
+* requests
+*MySQL-python
 
 (I think this is it)
 
