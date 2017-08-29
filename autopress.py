@@ -7,9 +7,7 @@ from tempfile import mkstemp
 # import passwords and API keys to make it easier to link people to this without giving away users/passwords.
 from secrets import *
 from distutils.dir_util import copy_tree
-
 from random import *
-from twindb_cloudflare.twindb_cloudflare import CloudFlare, CloudFlareException
 import os
 import sys
 import traceback
@@ -25,7 +23,7 @@ import socket
 import time
 import requests
 import json
-
+from twindb_cloudflare.twindb_cloudflare import CloudFlare, CloudFlareException
 
 
 testing = False
@@ -58,8 +56,8 @@ if len(sys.argv) > 1:
 
 def main(testing = False):
     global config
-    domainShort = str(raw_input("What is the domain without .com/.net etc"))
-    domain = str(raw_input("What is the root domain name ie domain.com:"))
+    domainShort = str(raw_input("What is the domain without .com/.net etc: "))
+    domain = str(raw_input("What is the root domain name ie domain.com: "))
     domainPeriod = str('.'+domain)
     domainLong = str('www.'+domain)
     config = "/etc/nginx/sites-enabled" +domain + ".conf"
@@ -141,10 +139,10 @@ def main(testing = False):
 
     # Create CF zones
 
-    # cf.create_dns_record('@', domain, ip)
-    cf.create_dns_record('www', '%s', '%s') % (domainPeriod, ipv4)
-    # cf.create_dns_record('@', domain, ipv6, record_type="AAAA")
-    # cf.create_dns_record('www', domain, ipv6, record_type="AAAA")
+    cf.create_dns_record('@', domain, ipv4)
+    cf.create_dns_record('www', domain, ipv4) 
+    cf.create_dns_record('@', domain, ipv6, record_type="AAAA")
+    cf.create_dns_record('www', domain, ipv6, record_type="AAAA")
 
     # set correct file / folder permissions
 

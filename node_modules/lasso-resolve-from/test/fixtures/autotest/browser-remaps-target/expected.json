@@ -1,0 +1,10 @@
+{
+    "path": "/foo/index-browser.js",
+    "meta": [
+        {
+            "type": "remap",
+            "from": "/foo/index.js",
+            "to": "/foo/index-browser.js"
+        }
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "path": "/foo/foo.js",
+    "meta": [
+        {
+            "type": "main",
+            "dir": "/foo",
+            "main": "/foo/foo.js"
+        }
+    ]
+}

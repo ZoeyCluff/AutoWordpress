@@ -1,0 +1,10 @@
+{
+    "path": "/node_modules/installed/lib/browser.js",
+    "meta": [
+        {
+            "type": "remap",
+            "from": "/node_modules/installed/lib/server.js",
+            "to": "/node_modules/installed/lib/browser.js"
+        }
+    ]
+}

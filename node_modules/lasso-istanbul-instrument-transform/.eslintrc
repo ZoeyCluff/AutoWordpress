@@ -1,0 +1,14 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 2017,
+        "sourceType": "module"
+    },
+    "env": {
+        "node": true
+    },
+    "rules": {
+        "semi": 1,
+        "no-unused-vars": 1,
+        "no-param-reassign": 1
+    }
+}

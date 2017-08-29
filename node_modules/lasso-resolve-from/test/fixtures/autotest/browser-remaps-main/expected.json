@@ -1,0 +1,15 @@
+{
+    "path": "/browser.js",
+    "meta": [
+        {
+            "type": "main",
+            "dir": "/",
+            "main": "/index.js"
+        },
+        {
+            "type": "remap",
+            "from": "/index.js",
+            "to": "/browser.js"
+        }
+    ]
+}

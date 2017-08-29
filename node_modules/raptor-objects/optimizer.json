@@ -1,0 +1,7 @@
+{
+    "dependencies": [
+        {
+            "package": "./lib/optimizer.json"
+        }
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "path": "/bar.js",
+    "meta": [
+        {
+            "type": "remap",
+            "from": "/foo.js",
+            "to": "/bar.js"
+        }
+    ]
+}

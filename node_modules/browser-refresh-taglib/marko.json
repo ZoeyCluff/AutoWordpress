@@ -1,0 +1,8 @@
+{
+    "tags": {
+        "browser-refresh": {
+            "renderer": "./refresh-tag",
+            "@enabled": "boolean"
+        }
+    }
+}
