@@ -101,7 +101,7 @@ def main(testing = False):
 
 
     print("Creating MySQL Database and User")
-    print(domain)
+
     # create db + user
 
 
