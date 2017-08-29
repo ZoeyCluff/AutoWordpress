@@ -27,6 +27,8 @@ from twindb_cloudflare.twindb_cloudflare import CloudFlare, CloudFlareException
 
 
 testing = False
+ssl = str("/etc/nginx/ssl/")
+param = str("openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048")
 
 
 
@@ -43,11 +45,17 @@ if not os.path.exists("nginxconfig.conf"):
     exit(1)
 print("nginxconfig.conf exists, continuing")
 
+# make sure ssl folder exists
+if not os.path.exists("/etc/nginx/ssl/"):
+    print("ssl folder missing, creating")
+    os.mkdir(ssl)
+
+print("/etc/nginx/ssl found, continuing")
+
 # Generate dhparams if they dont exist
-if not os.path.exists("/etc/nginx/ssl/dhparam.pem")
-    print("dhparams missing, will cause config errors later. generating in a known location"
-    os.mkdir("/etc/nginx/ssl/")
-    param = call(openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048)
+if not os.path.exists("/etc/nginx/ssl/dhparam.pem"):
+    print("dhparams missing, will cause config errors later. generating in a known location")
+    os.system(param)
 print("dhparam.pem found, continuing")
 
 if len(sys.argv) > 1:
