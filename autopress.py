@@ -73,6 +73,7 @@ def main(testing = False):
     mysqlpass = string.ascii_letters + string.punctuation.replace("\"", "").replace("'", "") + string.digits
     mysqlpassword1 = "".join(choice(mysqlpass) for x in range(randint(8, 16)))
     mysqlpassword = ('%s' % mysqlpassword1)
+    nginxTest = str('sudo nginx -t >nginx.py 2>&1')
 
 
 
