@@ -70,7 +70,8 @@ if len(sys.argv) > 1:
 
 def main(testing = False):
     global config
-    domainShort = raw_input("What is the domain without .com/.net etc: ")
+    # domainShort = raw_input("What is the domain without .com/.net etc: ")
+    domainShort = 'zojo2016'
     domain = str(raw_input("What is the root domain name ie domain.com: "))
     domainPeriod = str('.'+domain)
     domainLong = str('www.'+domain)
@@ -124,7 +125,7 @@ def main(testing = False):
     # Select data from table using SQL query.
     cur.execute("CREATE DATABASE IF NOT EXISTS " +domainShort)
 
-    cur.execute("GRANT ALL PRIVILEGES ON '%s'.* TO %s@'127.0.0.1' IDENTIFIED BY %s ", (domainShort, domainShort, mysqlpassword))
+    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'127.0.0.1' IDENTIFIED BY %s ", (domainShort, domainShort, mysqlpassword))
     cur.execute("FLUSH PRIVILEGES")
 
     db.commit()
@@ -264,6 +265,7 @@ def main(testing = False):
     print("To recap:")
     print("The MySQL username is: "), (domainShort)
     print("The MySQL password is: "), (mysqlpassword)
+    print("The MySQL database is: "), (domainShort)
     print("The domain name is: "), (domain)
     print("The Domain Name (with www) is "), (domainLong)
 
