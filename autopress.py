@@ -108,7 +108,7 @@ def main(testing = False):
             wwwFull = "www."+subdomain + "." + domain
             toDirectory = "/var/www/" + fullDomain
             fromDirectory = "/var/www/" + fullDomain + "/wordpress/"
-            # os.mkdir(toDirectory)
+            os.mkdir(toDirectory)
             leDomains =  "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (fullDomain, wwwFull)
             folder = "find '%s' -type d -exec chmod 755 {} +" % str(toDirectory)
             filePerm = "find '%s' -type f -exec chmod 644 {} +" % str(toDirectory)
