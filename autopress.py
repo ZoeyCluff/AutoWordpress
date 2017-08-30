@@ -89,14 +89,7 @@ def main(testing = False):
     mysqlpassword1 = "".join(choice(mysqlpass) for x in range(randint(8, 16)))
     mysqlpassword = ('%s' % mysqlpassword1)
     nginxTest = str('sudo nginx -t >nginx.py 2>&1')
-    print(domainShort)
-    toDirectory = "/var/www/" + domain + '/'
-    fromDirectory = "/var/www/" + domain + '/' + "/wordpress/"
-    os.mkdir(toDirectory)
-    leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
-    wpConfig = "/var/www/" + domain + '/' + 'wp-config.php'
-    folder = "find '%s' -type d -exec chmod 755 {} +" % str(toDirectory)
-    filePerm = "find '%s' -type f -exec chmod 644 {} +" % str(toDirectory)
+
 
 
 
@@ -114,13 +107,13 @@ def main(testing = False):
             filePerm = "find '%s' -type f -exec chmod 644 {} +" % str(toDirectory)
 
         else:
-            # toDirectory = "/var/www/" + domain + '/'
-            # fromDirectory = "/var/www/" + domain + '/' + "/wordpress/"
-            # os.mkdir(toDirectory)
-            # leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
-            # wpConfig = "/var/www/" + domain + '/' + 'wp-config.php'
-            # folder = "find '%s' -type d -exec chmod 755 {} +" % str(toDirectory)
-            # filePerm = "find '%s' -type f -exec chmod 644 {} +" % str(toDirectory)
+            toDirectory = "/var/www/" + domain + '/'
+            fromDirectory = "/var/www/" + domain + '/' + "/wordpress/"
+            os.mkdir(toDirectory)
+            leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
+            wpConfig = "/var/www/" + domain + '/' + 'wp-config.php'
+            folder = "find '%s' -type d -exec chmod 755 {} +" % str(toDirectory)
+            filePerm = "find '%s' -type f -exec chmod 644 {} +" % str(toDirectory)
 
 
 
