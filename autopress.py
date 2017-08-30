@@ -79,7 +79,7 @@ def main(testing = False):
     mysqluser = domainLong
     mysqlpass = string.ascii_letters + string.punctuation.replace("\"", "").replace("'", "") + string.digits
     mysqlpassword1 = "".join(choice(mysqlpass) for x in range(randint(8, 16)))
-    mysqlpassword = (%s % mysqlpassword1)
+    mysqlpassword = ('%s' % mysqlpassword1)
     nginxTest = str('sudo nginx -t >nginx.py 2>&1')
 
 
@@ -124,7 +124,7 @@ def main(testing = False):
     # Select data from table using SQL query.
     cur.execute("CREATE DATABASE IF NOT EXISTS " +domainShort)
 
-    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s'@*' IDENTIFIED BY %s WITH GRANT OPTION", (domainShort, domainShort, mysqlpassword))
+    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'127.0.0.1' IDENTIFIED BY %s WITH GRANT OPTION", (domainShort, domainShort, mysqlpassword))
     cur.execute("FLUSH PRIVILEGES")
 
     db.commit()
