@@ -49,7 +49,7 @@ print("nginxconfig.conf exists, continuing")
 if not os.path.exists("/etc/nginx/ssl/"):
     print("ssl folder missing, creating")
     os.mkdir(ssl)
-print("/etc/nginx/ssl found, continuing")
+print("/etc/ngin11x/ssl found, continuing")
 
 # Generate dhparams if they dont exist
 if not os.path.exists("/etc/nginx/ssl/dhparam.pem"):
@@ -82,6 +82,8 @@ def main(testing = False):
     mysqlpassword1 = "".join(choice(mysqlpass) for x in range(randint(8, 16)))
     mysqlpassword = ('%s' % mysqlpassword1)
     nginxTest = str('sudo nginx -t >nginx.py 2>&1')
+    print(domainShort)
+
 
 
 
@@ -123,9 +125,9 @@ def main(testing = False):
     cur = db.cursor()
 
     # Select data from table using SQL query.
-    cur.execute("CREATE DATABASE IF NOT EXISTS " +domainShort)
+    cur.execute("CREATE DATABASE IF NOT EXISTS zojo2057 " )
 
-    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'127.0.0.1' IDENTIFIED BY %s ", (domainShort, domainShort, mysqlpassword))
+    cur.execute("GRANT ALL PRIVILEGES ON " +domainShort + ".* TO %s@'127.0.0.1' IDENTIFIED BY %s ", (domainShort, mysqlpassword))
     cur.execute("FLUSH PRIVILEGES")
 
     db.commit()
