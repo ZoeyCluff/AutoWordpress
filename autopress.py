@@ -25,6 +25,7 @@ import requests
 import json
 from twindb_cloudflare.twindb_cloudflare import CloudFlare, CloudFlareException
 import MySQLdb
+import pathlib
 
 testing = False
 ssl = str("/etc/nginx/ssl/")
@@ -231,18 +232,18 @@ def main(testing = False):
 
 
     # generate LE certificates
-    os.chdir('./plugins')
+    p = Path('./plugins')
     extension = ".zip"
-    for files in os.walk("plugins"):
-        for item in os.listdir("plugins"):
+    for files in os.walk(p):
+        for item in os.listdir(p):
             if item.endswith(extension):
                 file_name = os.path.abspath(item)
                 zip_ref = zipfile.ZipFile(file_name)
                 zip_ref.extractall(pluginsDirectory)
                 zip_ref.close()
-    os.chdir('./themes')
-    for files in os.walk("themes"):
-        for item in os.listdir("themes"):
+    t = Path('./themes')
+    for files in os.walk(t):
+        for item in os.listdir(t):
             if item.endswith(extension):
                 file_name = os.path.abspath(item)
                 zip_ref = zipfile.ZipFile(file_name)

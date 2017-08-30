@@ -1,0 +1,2 @@
+import checks
+checks()
