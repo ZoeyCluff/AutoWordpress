@@ -57,6 +57,13 @@ if not os.path.exists("/etc/nginx/ssl/dhparam.pem"):
     os.system(param)
 print("dhparam.pem found, continuing")
 
+# Make sure wp-config-sample.php exists
+
+if not os.path.exists("wp-config-sample.php"):
+    print("wp-config-sample.php is missing. Make sure all files have been extracted.")
+    exit(1)
+print("WP Config found, continuing")
+
 if len(sys.argv) > 1:
     # We have args passed
     for arg in sys.argv:
@@ -70,8 +77,8 @@ if len(sys.argv) > 1:
 
 def main(testing = False):
     global config
-    # domainShort = raw_input("What is the domain without .com/.net etc: ")
-    domainShort = 'zojo2016'
+    domainShort = raw_input("What is the domain without .com/.net etc: ")
+    # domainShort = 'zojo2016'
     domain = str(raw_input("What is the root domain name ie domain.com: "))
     domainPeriod = str('.'+domain)
     domainLong = str('www.'+domain)
@@ -104,7 +111,7 @@ def main(testing = False):
             fromDirectory = "/var/www/" + domain + '/' + "/wordpress/"
             os.mkdir(toDirectory)
             leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
-
+            wpConfig = "/var/www/" + domain + '/' + 'wp-config.php'
             folder = "find '%s' -type d -exec chmod 755 {} +" % str(toDirectory)
             filePerm = "find '%s' -type f -exec chmod 644 {} +" % str(toDirectory)
 
@@ -125,7 +132,7 @@ def main(testing = False):
     cur = db.cursor()
 
     # Select data from table using SQL query.
-    cur.execute("CREATE DATABASE IF NOT EXISTS zojo2057 " )
+    cur.execute("CREATE DATABASE IF NOT EXISTS " + domainShort )
 
     cur.execute("GRANT ALL PRIVILEGES ON " +domainShort + ".* TO %s@'127.0.0.1' IDENTIFIED BY %s ", (domainShort, mysqlpassword))
     cur.execute("FLUSH PRIVILEGES")
@@ -164,8 +171,7 @@ def main(testing = False):
 
     # set correct file / folder permissions
 
-    os.system(str(folder))
-    os.system(str(filePerm))
+
 
     newData = ''
     with open('nginxconfig.conf', 'r') as f:
@@ -185,8 +191,43 @@ def main(testing = False):
     with open("/etc/nginx/sites-enabled/" +domain + ".conf", 'w') as f:
         f.write(newData)
 
+
+    # Populate wp-config.php
+
+    newData = ''
+    configDir = "/var/www/"+domain+"/"+"wp-config.php"
+    print("/var/www/" +domain +"/"+ "wp-config.php")
+    with open('wp-config-sample.php', 'r') as f:
+        for line in f:
+            if "define('DB_NAME', 'database_name_here');" in line:
+                newData += line.replace("define('DB_NAME', 'database_name_here');", "define('DB_NAME', '{}');".format(domainShort))
+            elif "define('DB_USER', 'username_here');" in line:
+                newData += line.replace("define('DB_USER', 'username_here');", "define('DB_USER', '{}');".format(domainShort))
+            elif "define('DB_PASSWORD', 'password_here');" in line:
+                newData += line.replace("define('DB_PASSWORD', 'password_here');", "define('DB_PASSWORD', '{}');".format(mysqlpassword))
+            elif "define('DB_HOST', 'localhost');" in line:
+                newData += line.replace("define('DB_HOST', 'localhost');", "define('DB_HOST', '{}');".format(mysqlServer))
+            else:
+                newData += line
+
+
+        with open(configDir, "w") as f:
+            f.write(newData)
+    print(newData)
+
+    # Generate salts
+
+    salt = urllib.urlopen('https://api.wordpress.org/secret-key/1.1/salt/')
+    f = open(configDir, "a")
+    content = salt.read()
+    f.write(content)
+    f.close()
+
+
     # generate LE certificates
 
+    os.system(str(folder))
+    os.system(str(filePerm))
     os.system(str("sudo systemctl stop nginx"))
     os.system(str(leDomains))
     os.system(nginxTest)

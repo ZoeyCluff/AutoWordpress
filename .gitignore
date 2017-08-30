@@ -2,3 +2,5 @@
 secrets.py
 secrets.pyc
 secrets.old
+nginx.py
+wp-config.php
