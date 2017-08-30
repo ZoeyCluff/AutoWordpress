@@ -165,6 +165,7 @@ def main(testing = False):
     os.chown(toDirectory, 33, 33)
 
     # Add plugins and Themes
+    os.chdir('./plugins')
     extension = ".zip"
     for files in os.walk("plugins"):
         for item in os.listdir("plugins"):
