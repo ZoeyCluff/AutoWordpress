@@ -62,7 +62,7 @@ git clone https://github.com/ZoeyCluff/AutoWordpress.git
 ```
 
 * CD into the directory and rename secrets.py.default to secrets.py.
-* Replace the placeholders with actual values. If  you use the mysql server installed from the above apt-get install command, for mysqlServer enter '127.0.0.1' and the user 'root'. for ipv4 enter the ipv4 address issued by your provider, same with IPV6. I'll make IPV6 optional in a later update, but seeing that over 60% of the internet supports it, it's good to have. Also you need to get your ["Global API Key"](https://www.cloudflare.com/a/profile) from Cloudflare and enter it in CLOUDFLARE_AUTH_KEY. Also enter your cloudflare e-mail address. All values after the = need to be in single quotes ('').
+* Replace the placeholders in secrets.py with actual values. If  you use the mysql server installed from the above apt-get install command, for mysqlServer enter '127.0.0.1' and the user 'root'. for ipv4 enter the ipv4 address issued by your provider, same with IPV6. I'll make IPV6 optional in a later update, but seeing that over 60% of the internet supports it, it's good to have. Also you need to get your ["Global API Key"](https://www.cloudflare.com/a/profile) from Cloudflare and enter it in CLOUDFLARE_AUTH_KEY. Also enter your cloudflare e-mail address. All values after the = need to be in single quotes ('').
 
 
 For the current version simply run:

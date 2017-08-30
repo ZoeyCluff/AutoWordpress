@@ -89,6 +89,8 @@ def main(testing = False):
     mysqlpassword1 = "".join(choice(mysqlpass) for x in range(randint(8, 16)))
     mysqlpassword = ('%s' % mysqlpassword1)
     nginxTest = str('sudo nginx -t >nginx.py 2>&1')
+    pluginsDirectory = "/var/www/" + domain + '/' + "/wordpress/wp-content/plugins"
+    themesDirectory = "/var/www/" + domain + '/' + "/wordpress/wp-content/themes"
 
 
 
@@ -102,15 +104,16 @@ def main(testing = False):
             toDirectory = "/var/www/" + fullDomain
             fromDirectory = "/var/www/" + fullDomain + "/wordpress/"
             os.mkdir(toDirectory)
-            leDomains =  "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (fullDomain, wwwFull)
+            leDomains =  "sudo certbot certonly  --agree-tos -a standalone -d '%s' -d '%s'" % (fullDomain, wwwFull)
             folder = "find '%s' -type d -exec chmod 755 {} +" % str(toDirectory)
             filePerm = "find '%s' -type f -exec chmod 644 {} +" % str(toDirectory)
 
         else:
             toDirectory = "/var/www/" + domain + '/'
             fromDirectory = "/var/www/" + domain + '/' + "/wordpress/"
+
             os.mkdir(toDirectory)
-            leDomains = "sudo certbot certonly --test-cert --staging --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
+            leDomains = "sudo certbot certonly --agree-tos -a standalone -d '%s' -d '%s'" % (domain, domainLong)
             wpConfig = "/var/www/" + domain + '/' + 'wp-config.php'
             folder = "find '%s' -type d -exec chmod 755 {} +" % str(toDirectory)
             filePerm = "find '%s' -type f -exec chmod 644 {} +" % str(toDirectory)
@@ -161,7 +164,25 @@ def main(testing = False):
     # set correct permissions
     os.chown(toDirectory, 33, 33)
 
+    # Add plugins and Themes
+    extension = ".zip"
+    for files in os.walk("./plugins"):
+        for item in os.listdir("./plugins"):
+            if item.endswith(extension):
+                file_name = os.path.abspath(item)
+                zip_ref = zipfile.ZipFile(file_name)
+                zip_ref.extractall(pluginsDirectory)
+                zip_ref.close()
 
+    for files in os.walk("./themes"):
+        for item in os.listdir("./themes"):
+            if item.endswith(extension):
+                file_name = os.path.abspath(item)
+                zip_ref = zipfile.ZipFile(file_name)
+                zip_ref.extractall(themesDirectory)
+                zip_ref.close()
+
+                
     # Create CF zones
 
     cf.create_dns_record('@', domain, ipv4)
@@ -169,7 +190,7 @@ def main(testing = False):
     cf.create_dns_record('@', domain, ipv6, record_type="AAAA")
     cf.create_dns_record('www', domain, ipv6, record_type="AAAA")
 
-    # set correct file / folder permissions
+
 
 
 
