@@ -41,7 +41,7 @@ print("secrets.py found, continuing")
 
 # Make sure nginxconfig.conf exists
 if not os.path.exists("nginxconfig.conf"):
-    print("nginxconfig.conf missing, please make sure all files have been extracted.")
+    print("nginxconfig.conf missing, please make sure all files have been downloaded.")
     exit(1)
 print("nginxconfig.conf exists, continuing")
 
@@ -49,7 +49,7 @@ print("nginxconfig.conf exists, continuing")
 if not os.path.exists("/etc/nginx/ssl/"):
     print("ssl folder missing, creating")
     os.mkdir(ssl)
-print("/etc/ngin11x/ssl found, continuing")
+print("/etc/nginx/ssl/ found, continuing")
 
 # Generate dhparams if they dont exist
 if not os.path.exists("/etc/nginx/ssl/dhparam.pem"):
@@ -60,7 +60,7 @@ print("dhparam.pem found, continuing")
 # Make sure wp-config-sample.php exists
 
 if not os.path.exists("wp-config-sample.php"):
-    print("wp-config-sample.php is missing. Make sure all files have been extracted.")
+    print("wp-config-sample.php is missing. Make sure all files have been downloaded.")
     exit(1)
 print("WP Config found, continuing")
 
@@ -78,7 +78,7 @@ if len(sys.argv) > 1:
 def main(testing = False):
     global config
     domainShort = raw_input("What is the domain without .com/.net etc: ")
-    # domainShort = 'zojo2016'
+    
     domain = str(raw_input("What is the root domain name ie domain.com: "))
     domainPeriod = str('.'+domain)
     domainLong = str('www.'+domain)
@@ -213,7 +213,7 @@ def main(testing = False):
 
         with open(configDir, "w") as f:
             f.write(newData)
-    print(newData)
+
 
     # Generate salts
 
