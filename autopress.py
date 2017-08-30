@@ -78,7 +78,7 @@ if len(sys.argv) > 1:
 def main(testing = False):
     global config
     domainShort = raw_input("What is the domain without .com/.net etc: ")
-    
+
     domain = str(raw_input("What is the root domain name ie domain.com: "))
     domainPeriod = str('.'+domain)
     domainLong = str('www.'+domain)
@@ -259,9 +259,9 @@ def main(testing = False):
             cur = db.cursor()
 
             # Select data from table using SQL query.
-            cur.execute("DROP DATABASE " + domain)
+            cur.execute("DROP DATABASE " + domainShort)
 
-            cur.execute("DROP USER " +domain+"@"+ipv4)
+            cur.execute("DROP USER " +domainShort+"@""127.0.0.1")
             cur.execute("FLUSH PRIVILEGES")
 
             db.commit()
@@ -299,8 +299,8 @@ def main(testing = False):
         cur = db.cursor()
 
         # Select data from table using SQL query.
-        cur.execute("DROP DATABASE " +domain)
-        cur.execute("DROP USER " +domain+"@"+"*")
+        cur.execute("DROP DATABASE " +domainShort)
+        cur.execute("DROP USER " +domainShort+"@"+"127.0.0.1")
         cur.execute("FLUSH PRIVILEGES")
         db.commit()
         db.close()
