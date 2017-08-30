@@ -165,23 +165,7 @@ def main(testing = False):
     os.chown(toDirectory, 33, 33)
 
     # Add plugins and Themes
-    os.chdir('./plugins')
-    extension = ".zip"
-    for files in os.walk("plugins"):
-        for item in os.listdir("plugins"):
-            if item.endswith(extension):
-                file_name = os.path.abspath(item)
-                zip_ref = zipfile.ZipFile(file_name)
-                zip_ref.extractall(pluginsDirectory)
-                zip_ref.close()
 
-    for files in os.walk("themes"):
-        for item in os.listdir("themes"):
-            if item.endswith(extension):
-                file_name = os.path.abspath(item)
-                zip_ref = zipfile.ZipFile(file_name)
-                zip_ref.extractall(themesDirectory)
-                zip_ref.close()
 
 
     # Create CF zones
@@ -247,7 +231,24 @@ def main(testing = False):
 
 
     # generate LE certificates
+    os.chdir('./plugins')
+    extension = ".zip"
+    for files in os.walk("plugins"):
+        for item in os.listdir("plugins"):
+            if item.endswith(extension):
+                file_name = os.path.abspath(item)
+                zip_ref = zipfile.ZipFile(file_name)
+                zip_ref.extractall(pluginsDirectory)
+                zip_ref.close()
 
+    for files in os.walk("themes"):
+        for item in os.listdir("themes"):
+            if item.endswith(extension):
+                file_name = os.path.abspath(item)
+                zip_ref = zipfile.ZipFile(file_name)
+                zip_ref.extractall(themesDirectory)
+                zip_ref.close()
+                
     os.system(str(folder))
     os.system(str(filePerm))
     os.system(str("sudo systemctl stop nginx"))
