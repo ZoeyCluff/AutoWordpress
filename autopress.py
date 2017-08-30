@@ -13,7 +13,7 @@ import sys
 import traceback
 import fileinput
 import string
-import MySQLdb
+import zipfile
 import urllib
 import shutil
 import tarfile
@@ -24,7 +24,7 @@ import time
 import requests
 import json
 from twindb_cloudflare.twindb_cloudflare import CloudFlare, CloudFlareException
-
+import MySQLdb
 
 testing = False
 ssl = str("/etc/nginx/ssl/")
@@ -182,7 +182,7 @@ def main(testing = False):
                 zip_ref.extractall(themesDirectory)
                 zip_ref.close()
 
-                
+
     # Create CF zones
 
     cf.create_dns_record('@', domain, ipv4)
