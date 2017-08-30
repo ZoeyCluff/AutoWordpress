@@ -202,6 +202,8 @@ def main(testing = False):
     # Populate wp-config.php
 
     newData = ''
+    salt = urllib.urlopen('https://api.wordpress.org/secret-key/1.1/salt/')
+    content = salt.read()
     configDir = "/var/www/"+domain+"/"+"wp-config.php"
     print("/var/www/" +domain +"/"+ "wp-config.php")
     with open('wp-config-sample.php', 'r') as f:
@@ -214,6 +216,8 @@ def main(testing = False):
                 newData += line.replace("define('DB_PASSWORD', 'password_here');", "define('DB_PASSWORD', '{}');".format(mysqlpassword))
             elif "define('DB_HOST', 'localhost');" in line:
                 newData += line.replace("define('DB_HOST', 'localhost');", "define('DB_HOST', '{}');".format(mysqlServer))
+            elif "salts" in line:
+                newData += line.replace("salts", '{}').format(content)
             else:
                 newData += line
 
@@ -222,33 +226,22 @@ def main(testing = False):
             f.write(newData)
 
 
-    # Generate salts
 
-    salt = urllib.urlopen('https://api.wordpress.org/secret-key/1.1/salt/')
-    f = open(configDir, "a")
-    content = salt.read()
-    f.write(content)
-    f.close()
+
+
 
 
     # generate LE certificates
-    p = Path('./plugins')
+    os.chdir('./plugins')
     extension = ".zip"
-    for files in os.walk(p):
-        for item in os.listdir(p):
+    for files in os.walk("plugins"):
+        for item in os.listdir("plugins"):
             if item.endswith(extension):
                 file_name = os.path.abspath(item)
                 zip_ref = zipfile.ZipFile(file_name)
                 zip_ref.extractall(pluginsDirectory)
                 zip_ref.close()
-    t = Path('./themes')
-    for files in os.walk(t):
-        for item in os.listdir(t):
-            if item.endswith(extension):
-                file_name = os.path.abspath(item)
-                zip_ref = zipfile.ZipFile(file_name)
-                zip_ref.extractall(themesDirectory)
-                zip_ref.close()
+
 
     os.system(str(folder))
     os.system(str(filePerm))
