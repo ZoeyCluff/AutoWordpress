@@ -166,16 +166,16 @@ def main(testing = False):
 
     # Add plugins and Themes
     extension = ".zip"
-    for files in os.walk("./plugins"):
-        for item in os.listdir("./plugins"):
+    for files in os.walk("plugins"):
+        for item in os.listdir("plugins"):
             if item.endswith(extension):
                 file_name = os.path.abspath(item)
                 zip_ref = zipfile.ZipFile(file_name)
                 zip_ref.extractall(pluginsDirectory)
                 zip_ref.close()
 
-    for files in os.walk("./themes"):
-        for item in os.listdir("./themes"):
+    for files in os.walk("themes"):
+        for item in os.listdir("themes"):
             if item.endswith(extension):
                 file_name = os.path.abspath(item)
                 zip_ref = zipfile.ZipFile(file_name)
