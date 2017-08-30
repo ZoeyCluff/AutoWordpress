@@ -112,3 +112,12 @@ If you browse to your domain, you should be shown "Welcome" with a few fields as
 * Subdomain support. either as subdomain.domain.com or domain.com/site.
 
 * Clean up leftovers from V0.1 that aren't being used. I know for a fact a large portion of imports are unused.
+
+
+## Why?
+
+I know there's things like [EasyEngine](https://easyengine.io/) or even [wp-cli](http://wp-cli.org/) out there that do this better, so why did I make this? EasyEngine caused problems on one of my sites and it was a complete and utter nightmare to clean up after. It was easier to nuke the server and start over than to try and undo all the random config changes it does. I never used wp-cli so I can't speak of it. This is as vanilla of a setup as humanly possible. I basically took everything I did to manually setup a blog for a friend, and found how to script it. Everything can be edited without causing random problems (looking at you EasyEngine), you can run more than one site per server (again looking at you EasyEngine), etc.
+
+ Mostly I wanted to learn Python, and I've tried learning things on sites like Udemy, learnpythonthehardway, FreeCodeCamp, and none of them were as helpful as coming up with an idea and coding it. I've spent 100+ hours watching tutorials and following along, and I've learned way more just trying to do it myself (with ample help from friends and Google...(And StackOverflow)). This was originally going to be used to create sites for my friends to use, and I had gotten really sick of doing all this manually. In my (inexperienced) head, I figured I could have done this completed in 50 or so lines. Well, several months, hundreds of hours of trial and error, filling up my friend's beer fridge at least once in exchange for code help, and 6x the amount of code I expected, but I actually "finished" what I had originally set out to do.
+
+ I'm going to continue working on this in my free time, adding new features that are either suggested, or I think would be cool. While it was frustrating sometimes, it makes me feel good that I learned something from scratch (The only python I had ever written before I wrote the first line of this project was print("Hello World!"). Now there's 325 lines that (In my opinion) do pretty cool things.)
