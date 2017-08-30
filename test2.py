@@ -199,7 +199,7 @@ def main(testing = False):
 
 
     # Populate wp-config.php
-
+    salt = urllib.urlopen('https://api.wordpress.org/secret-key/1.1/salt/')
     newData = ''
     configDir = "/var/www/"+domain+"/"+"wp-config.php"
     print("/var/www/" +domain +"/"+ "wp-config.php")
@@ -213,6 +213,8 @@ def main(testing = False):
                 newData += line.replace("define('DB_PASSWORD', 'password_here');", "define('DB_PASSWORD', '{}');".format(mysqlpassword))
             elif "define('DB_HOST', 'localhost');" in line:
                 newData += line.replace("define('DB_HOST', 'localhost');", "define('DB_HOST', '{}');".format(mysqlServer))
+            elif "salts" in line:
+                newData += line.replace("salts", '{}').format(salt))
             else:
                 newData += line
 
@@ -223,11 +225,11 @@ def main(testing = False):
 
     # Generate salts
 
-    salt = urllib.urlopen('https://api.wordpress.org/secret-key/1.1/salt/')
-    f = open(configDir, "a")
-    content = salt.read()
-    f.write(content)
-    f.close()
+
+    # f = open(configDir, "a")
+    # content = salt.read()
+    # f.write(content)
+    # f.close()
 
 
     # generate LE certificates
