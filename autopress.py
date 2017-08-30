@@ -124,7 +124,7 @@ def main(testing = False):
     # Select data from table using SQL query.
     cur.execute("CREATE DATABASE IF NOT EXISTS " +domainShort)
 
-    cur.execute("GRANT ALL PRIVILEGES ON `%s`.* TO %s@'127.0.0.1' IDENTIFIED BY %s ", (domainShort, domainShort, mysqlpassword))
+    cur.execute("GRANT ALL PRIVILEGES ON %s.* TO %s@'127.0.0.1' IDENTIFIED BY %s ", (domainShort, domainShort, mysqlpassword))
     cur.execute("FLUSH PRIVILEGES")
 
     db.commit()
