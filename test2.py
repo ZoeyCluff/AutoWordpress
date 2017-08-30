@@ -200,6 +200,7 @@ def main(testing = False):
 
     # Populate wp-config.php
     salt = urllib.urlopen('https://api.wordpress.org/secret-key/1.1/salt/')
+    content = salt.read()
     newData = ''
     configDir = "/var/www/"+domain+"/"+"wp-config.php"
     print("/var/www/" +domain +"/"+ "wp-config.php")
@@ -214,7 +215,7 @@ def main(testing = False):
             elif "define('DB_HOST', 'localhost');" in line:
                 newData += line.replace("define('DB_HOST', 'localhost');", "define('DB_HOST', '{}');".format(mysqlServer))
             elif "salts" in line:
-                newData += line.replace("salts", '{}').format(salt))
+                newData += line.replace("salts", '{}').format(content)
             else:
                 newData += line
 
@@ -227,10 +228,10 @@ def main(testing = False):
 
 
     # f = open(configDir, "a")
-    # content = salt.read()
+
     # f.write(content)
     # f.close()
-
+    curDir = os.getcwd()
 
     # generate LE certificates
     os.chdir('./plugins')
@@ -242,7 +243,12 @@ def main(testing = False):
                 zip_ref = zipfile.ZipFile(file_name)
                 zip_ref.extractall(pluginsDirectory)
                 zip_ref.close()
+
+
+
+    os.chdir(curDir)
     os.chdir('./themes')
+    extension = ".zip"
     for files in os.walk("themes"):
         for item in os.listdir("themes"):
             if item.endswith(extension):

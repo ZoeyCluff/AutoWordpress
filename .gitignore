@@ -5,4 +5,5 @@ secrets.old
 nginx.py
 wp-config.php
 .stfolder
+.stversions
 Autopress-requests.py
