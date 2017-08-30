@@ -70,7 +70,7 @@ if len(sys.argv) > 1:
 
 def main(testing = False):
     global config
-    domainShort = str(raw_input("What is the domain without .com/.net etc: "))
+    domainShort = raw_input("What is the domain without .com/.net etc: ")
     domain = str(raw_input("What is the root domain name ie domain.com: "))
     domainPeriod = str('.'+domain)
     domainLong = str('www.'+domain)
