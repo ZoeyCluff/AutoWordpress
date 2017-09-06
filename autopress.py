@@ -1,8 +1,5 @@
 #!/usr/bin/python
-
-# Import Modules. twindb_cloudflare will be replaced with requests once I(we) figure out proper vanilla API calls.
-# twindb doesn't support removing IPV6 records but requests with the native Cloudflare API does.
-
+from __future__ import print_function
 from tempfile import mkstemp
 # import passwords and API keys to make it easier to link people to this without giving away users/passwords.
 from secrets import *
@@ -71,7 +68,6 @@ if len(sys.argv) > 1:
         if arg.lower() == "-testing":
             # Testing is enabled
             testing = True
-            print("LetsEncrypt staging is enabled, certificates generated are invalid, run without -letest for production certificates")
             break
 
 
@@ -79,7 +75,6 @@ if len(sys.argv) > 1:
 def main(testing = False):
     global config
     domainShort = raw_input("What is the domain without .com/.net etc: ")
-
     domain = str(raw_input("What is the root domain name ie domain.com: "))
     domainPeriod = str('.'+domain)
     domainLong = str('www.'+domain)
@@ -91,7 +86,7 @@ def main(testing = False):
     mysqlpassword = ('%s' % mysqlpassword1)
     nginxTest = str('sudo nginx -t >nginx.py 2>&1')
     pluginsDirectory = "/var/www/" + domain + '/' + "/wordpress/wp-content/plugins"
-    themesDirectory = "/var/www/" + domain + '/' + "/wordpress/wp-content/themes"
+    os.remove("nginx.py")
 
 
 
@@ -163,7 +158,7 @@ def main(testing = False):
     shutil.rmtree(fromDirectory)
 
     # set correct permissions
-    os.chown(toDirectory, 33, 33)
+
 
     # Add plugins and Themes
 
@@ -226,12 +221,7 @@ def main(testing = False):
             f.write(newData)
 
 
-
-
-
-
-
-    # generate LE certificates
+    # copy plugins
     os.chdir('./plugins')
     extension = ".zip"
     for files in os.walk("plugins"):
@@ -248,10 +238,15 @@ def main(testing = False):
     os.system(str("sudo systemctl stop nginx"))
     os.system(str(leDomains))
     os.system(nginxTest)
-
+    os.chown(toDirectory, 33, 33)
     # check nginx config before starting nginx again, else reverting
     if 'ok' in open(str('nginx.py')).read():
         print("Config tests Good")
+        print("To recap:")
+        print("The MySQL username is: " + domainShort)
+        print("The MySQL password is: " + mysqlpassword)
+        print("The MySQL database is: " + domainShort)
+        print("The domain name is: " + domain)
         os.system(str("sudo systemctl start nginx"))
         if testing:
             print("Run Success and testing specified, deleting files.")
@@ -322,12 +317,8 @@ def main(testing = False):
         db.commit()
         db.close()
 
-    print("To recap:")
-    print("The MySQL username is: "), (domainShort)
-    print("The MySQL password is: "), (mysqlpassword)
-    print("The MySQL database is: "), (domainShort)
-    print("The domain name is: "), (domain)
-    print("The Domain Name (with www) is "), (domainLong)
+
+
 
 try:
     main(testing)
